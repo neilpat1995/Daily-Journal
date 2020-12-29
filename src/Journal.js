@@ -22,7 +22,7 @@ class Journal extends Component {
 
     handleEntrySubmit = (event) => {
         event.preventDefault();
-        // Create and prepend new journal entry to the journal
+        // Create and append new journal entry to the journal
         const newEntry = {
             title: this.state.title,
             description: this.state.description,

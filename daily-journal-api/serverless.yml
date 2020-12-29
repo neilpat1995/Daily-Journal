@@ -1,0 +1,69 @@
+# NOTE: update this with your service name
+service: daily-journal-api
+
+# Create an optimized package for our functions 
+package:
+  individually: true
+
+plugins:
+  - serverless-bundle # Package our functions with Webpack
+  - serverless-offline
+  - serverless-dotenv-plugin # Load .env as environment variables
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: prod
+  region: us-east-1
+  profile: daily-journal-profile
+ 
+  environment:
+    tableName: journal-entries
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action: 
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:DescribeTable
+      Resource: "arn:aws:dynamodb:us-east-1:*:*"
+
+functions:
+  createEntry:
+    handler: createEntry.main
+    events:
+      - http:
+          path: entries
+          method: post
+
+  getEntry:
+    handler: getEntry.main
+    events:
+      - http:
+          path: entries/{id}
+          method: get
+  
+  getEntryList:
+    handler: listEntries.main
+    events:
+      - http:
+          path: entries
+          method: get
+  
+  updateEntry:
+    handler: updateEntry.main
+    events:
+      - http:
+          path: entries/{id}
+          method: put
+  
+  deleteEntry:
+    handler: deleteEntry.main
+    events:
+      - http:
+          path: entries/{id}
+          method: delete

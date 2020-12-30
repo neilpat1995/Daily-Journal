@@ -39,6 +39,7 @@ functions:
       - http:
           path: entries
           method: post
+          authorizer: aws_iam
 
   getEntry:
     handler: getEntry.main
@@ -46,6 +47,7 @@ functions:
       - http:
           path: entries/{id}
           method: get
+          authorizer: aws_iam
   
   getEntryList:
     handler: listEntries.main
@@ -53,6 +55,7 @@ functions:
       - http:
           path: entries
           method: get
+          authorizer: aws_iam
   
   updateEntry:
     handler: updateEntry.main
@@ -60,6 +63,7 @@ functions:
       - http:
           path: entries/{id}
           method: put
+          authorizer: aws_iam
   
   deleteEntry:
     handler: deleteEntry.main
@@ -67,3 +71,4 @@ functions:
       - http:
           path: entries/{id}
           method: delete
+          authorizer: aws_iam

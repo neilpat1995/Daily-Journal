@@ -1,0 +1,14 @@
+.alert {
+    padding: 20px;
+    background-color:orange;
+    color: white;
+    margin-bottom: 15px;
+  }
+
+.loginFormContainer {
+    text-align: center;
+}
+
+.form {
+    display: inline-block;
+}

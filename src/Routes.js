@@ -5,6 +5,8 @@ import Journal from "./Journal";
 import JournalEntryForm from "./JournalEntryForm";
 import JournalEntry from "./JournalEntry";
 import InvalidResource from "./InvalidResource";
+import AuthenticatedRoute from "./AuthenticatedRoute";
+import UnauthenticatedRoute from "./UnauthenticatedRoute";
 
 function Routes(props) {
   return (
@@ -12,18 +14,18 @@ function Routes(props) {
       <Route exact path="/">
         <Journal />
       </Route>
-      <Route exact path="/signup">
+      <UnauthenticatedRoute exact path="/signup">
         <SignUp />
-      </Route>
-      <Route exact path="/login">
+      </UnauthenticatedRoute>
+      <UnauthenticatedRoute exact path="/login">
         <Login />
-      </Route>
-      <Route exact path="/createEntry">
+      </UnauthenticatedRoute>
+      <AuthenticatedRoute exact path="/createEntry">
         <JournalEntryForm />
-      </Route>
-      <Route exact path="/entry/:entryId">
+      </AuthenticatedRoute>
+      <AuthenticatedRoute exact path="/entry/:entryId">
         <JournalEntry />
-      </Route>
+      </AuthenticatedRoute>
       <Route path="*">
           <InvalidResource />
       </Route>

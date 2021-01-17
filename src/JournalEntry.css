@@ -1,0 +1,11 @@
+.entryFormContainer {
+    text-align: center;
+}
+
+.form {
+    display: inline-block;
+}
+
+.deleteButton {
+    margin-top: 20px;
+}

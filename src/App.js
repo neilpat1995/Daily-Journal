@@ -54,11 +54,12 @@ function App() {
               />{' '}
       Daily Journal
           </Navbar.Brand>
-            {isAuthenticated ? (
-              <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
-            ) : (<div />)
-            };
-        </Navbar>
+            {isAuthenticated &&
+              <span className="logoutContainer">
+                <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+              </span>
+            }
+          </Navbar>
         </Container>
 
         <AppContext.Provider value={{ isAuthenticated, userHasAuthenticated }}>

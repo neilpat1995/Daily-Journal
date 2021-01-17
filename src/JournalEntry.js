@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { API } from "aws-amplify";
 import { useHistory } from "react-router-dom";
 import { useAppContext } from "./libs/contextLib";
+import "./JournalEntry.css";
 
 const JournalEntry = () => {
 
@@ -86,14 +87,14 @@ const JournalEntry = () => {
     }
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
+        <div className="entryFormContainer">
+            <form className="form" onSubmit={handleSubmit}>
                 <label htmlFor="title">Title</label><br />
                 <input type="text" id="title" name="title" value={title} onChange={(event) => setTitle(event.target.value)}></input><br /><br />
                 <label htmlFor="description">Description</label><br />
                 <input type="text" id="description" name="description" value={description} onChange={(event) => setDescription(event.target.value)}></input><br /><br />
-                <input type="submit" value="Save Changes" />
-                <button type="button" onClick={() => handleDeleteClick()}>Delete Entry</button>
+                <input type="submit" value="Save Changes" /><br />
+                <button className="deleteButton" type="button" onClick={() => handleDeleteClick()}>Delete Entry</button>
             </form>
         </div>
     );

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { API } from "aws-amplify";
 import { useHistory } from "react-router-dom";
 import { useAppContext } from "./libs/contextLib";
+import "./JournalEntryForm.css";
 
 function JournalEntryForm() {
 
@@ -48,9 +49,9 @@ function JournalEntryForm() {
     }
 
     return (
-        <div>
+        <div className="createEntryFormContainer">
             <h1>Create New Entry</h1>
-            <form onSubmit={handleEntrySubmit}>
+            <form className="form" onSubmit={handleEntrySubmit}>
                 <label htmlFor="titleText">Title</label><br />
                 <input type="text" id="titleText" name="title" value={title} onChange={(event) => setTitle(event.target.value)}></input><br /><br />
                 <label htmlFor="descriptionText">Description</label><br />

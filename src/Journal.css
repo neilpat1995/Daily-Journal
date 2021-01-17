@@ -4,5 +4,9 @@
 
 .action-button-group {
     margin: auto;
-    width: 25%;
+    max-width: 25%;
+}
+
+.entryTitle {
+    font-weight: bold;
 }

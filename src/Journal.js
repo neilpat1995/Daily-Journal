@@ -4,11 +4,15 @@ import { useAppContext } from "./libs/contextLib";
 import { LinkContainer } from "react-router-bootstrap";
 import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
+import { useLocation } from "react-router-dom";
+import "./Journal.css";
 
 function Journal() {
 
     const [entries, setEntries] = useState([]);
     const { isAuthenticated } = useAppContext();
+    const location = useLocation();
+    const { from } = location.state || { from: { pathname: null } };
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -32,8 +36,7 @@ function Journal() {
         return (
             <div>
                 <h1 className="home-info">Daily Journal</h1><br />
-                <p className="home-info">A tool to track your daily accomplishments</p><br />
-
+                <h3 className="home-info">A tool to track your daily accomplishments</h3><br />
                 <div className="action-button-group">
                     <LinkContainer to="/signup">
                         <Button variant="primary" size="lg" block>Sign Up</Button>
@@ -49,7 +52,7 @@ function Journal() {
     function renderJournal() {
         return (
             <div>
-                <p>My Journal</p>
+                <h1 className="home-info">My Journal</h1>
                 <ListGroup>{renderJournalEntries(entries)}</ListGroup>
             </div>
         );
@@ -67,7 +70,7 @@ function Journal() {
                     <LinkContainer key={entryId} to={`/entry/${entryId}`}>
                         <ListGroup.Item action>
                             <span>{entryTimestamp}</span> <br />
-                            <span>{title}</span> <br />
+                            <span className="entryTitle">{title}</span> <br />
                             <span>{description}</span> <br />
                         </ListGroup.Item>
                     </LinkContainer>
@@ -78,6 +81,9 @@ function Journal() {
 
     return (
         <div>
+            {from.pathname &&
+                <div className="alert">You must log out to view the requested page; please log out and try again.</div>
+            }
             {isAuthenticated ? renderJournal() : renderAuthPage()}
         </div>
     );

@@ -1,65 +1,86 @@
-import { Component } from "react";
-import JournalEntry from "./JournalEntry";
-import JournalEntryForm from "./JournalEntryForm";
+import React, { useState, useEffect } from "react";
+import { API } from "aws-amplify";
+import { useAppContext } from "./libs/contextLib";
+import { LinkContainer } from "react-router-bootstrap";
+import Button from "react-bootstrap/Button";
+import ListGroup from "react-bootstrap/ListGroup";
 
-class Journal extends Component {
+function Journal() {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            entries: new Array(),
-            title: "",
-            description: ""
-        };
+    const [entries, setEntries] = useState([]);
+    const { isAuthenticated } = useAppContext();
 
-    }
+    useEffect(() => {
+        if (!isAuthenticated) {
+            return;
+        }
 
-    handleEntryChange = (event) => {
-        this.setState({
-            [event.target.name]: event.target.value
-        });
-    }
+        function getData() {
+            const apiName = 'daily-journal';
+            const path = '/entries';
 
-    handleEntrySubmit = (event) => {
-        event.preventDefault();
-        // Create and append new journal entry to the journal
-        const newEntry = {
-            title: this.state.title,
-            description: this.state.description,
-            creationDate: new Date().toString()
-        };
+            return API.get(apiName, path);
+        }
 
-        const updatedJournal = this.state.entries.slice();
-        updatedJournal.push(newEntry);
+        (async function () {
+            const response = await getData();
+            setEntries(response);
+        })();
+    }, [isAuthenticated]);
 
-        // TODO: Change this to prevent depending on up-to-date state (they can be batched)
-        this.setState({
-            entries: updatedJournal,
-            title: "",
-            description: ""
-        });
-    }
-
-    render() {
-        const entryList = this.state.entries.map((entry, index) => {
-            return (
-                <JournalEntry key={index} title={entry.title} description={entry.description} creationDate={entry.creationDate} />
-            );
-        });
+    function renderAuthPage() {
         return (
             <div>
-                <div className="newJournalEntry">
-                    <JournalEntryForm handleEntryChange={this.handleEntryChange} handleEntrySubmit={this.handleEntrySubmit} title={this.state.title} description={this.state.description} />
-                </div>
-                <div className="journal">
-                    <ul>
-                        {entryList}
-                    </ul>
+                <h1 className="home-info">Daily Journal</h1><br />
+                <p className="home-info">A tool to track your daily accomplishments</p><br />
+
+                <div className="action-button-group">
+                    <LinkContainer to="/signup">
+                        <Button variant="primary" size="lg" block>Sign Up</Button>
+                    </LinkContainer>
+                    <LinkContainer to="/login">
+                        <Button variant="primary" size="lg" block>Log In</Button>
+                    </LinkContainer>
                 </div>
             </div>
         );
     }
 
+    function renderJournal() {
+        return (
+            <div>
+                <p>My Journal</p>
+                <ListGroup>{renderJournalEntries(entries)}</ListGroup>
+            </div>
+        );
+    }
+
+    function renderJournalEntries(entries) {
+        return (
+            <ListGroup>
+                <LinkContainer to="/createEntry">
+                    <ListGroup.Item action>
+                        <span>Create a New Entry</span>
+                    </ListGroup.Item>
+                </LinkContainer>
+                {entries.map(({ entryId, entryTimestamp, title, description }) => (
+                    <LinkContainer key={entryId} to={`/entry/${entryId}`}>
+                        <ListGroup.Item action>
+                            <span>{entryTimestamp}</span> <br />
+                            <span>{title}</span> <br />
+                            <span>{description}</span> <br />
+                        </ListGroup.Item>
+                    </LinkContainer>
+                ))}
+            </ListGroup>
+        );
+    }
+
+    return (
+        <div>
+            {isAuthenticated ? renderJournal() : renderAuthPage()}
+        </div>
+    );
 }
 
 export default Journal;

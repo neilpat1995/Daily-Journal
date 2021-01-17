@@ -40,6 +40,7 @@ functions:
           path: entries
           method: post
           authorizer: aws_iam
+          cors: true
 
   getEntry:
     handler: getEntry.main
@@ -48,6 +49,7 @@ functions:
           path: entries/{id}
           method: get
           authorizer: aws_iam
+          cors: true
   
   getEntryList:
     handler: listEntries.main
@@ -56,6 +58,7 @@ functions:
           path: entries
           method: get
           authorizer: aws_iam
+          cors: true
   
   updateEntry:
     handler: updateEntry.main
@@ -64,6 +67,7 @@ functions:
           path: entries/{id}
           method: put
           authorizer: aws_iam
+          cors: true
   
   deleteEntry:
     handler: deleteEntry.main
@@ -72,3 +76,8 @@ functions:
           path: entries/{id}
           method: delete
           authorizer: aws_iam
+          cors: true
+
+resources:
+  # API Gateway Errors
+  - ${file(resources/api-gateway-errors.yml)}

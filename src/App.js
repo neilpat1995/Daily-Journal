@@ -1,28 +1,72 @@
+import React, { useState, useEffect } from "react";
 import './App.css';
-import Journal from "./Journal";
-import Login from "./Login";
-import SignUp from "./SignUp";
-import {
-  Switch,
-  Route
-} from "react-router-dom";
+import Navbar from "react-bootstrap/Navbar";
+import Container from "react-bootstrap/Container";
+import logo from "./journal-logo.png";
+import Routes from "./Routes";
+import { AppContext } from "./libs/contextLib";
+import { Nav } from "react-bootstrap";
+import { Auth } from "aws-amplify";
+import { useHistory } from "react-router-dom";
 
 function App() {
+  const [isAuthenticated, userHasAuthenticated] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(true);
+
+  useEffect(() => {
+    onLoad();
+  }, []);
+
+  const history = useHistory();
+
+  async function onLoad() {
+    try {
+      await Auth.currentSession();
+      userHasAuthenticated(true);
+    }
+    catch (e) {
+      if (e !== 'No current user') {
+        alert(e);
+      }
+    }
+
+    setIsAuthenticating(false);
+  }
+
+  async function handleLogout() {
+    await Auth.signOut();
+    userHasAuthenticated(false);
+    history.push("/");
+  }
+
   return (
-    <div className="App">
-      <Switch>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="/signup">
-          <SignUp />
-        </Route>
-        <Route path="/">
-          <h1> Daily Journal </h1>
-          <Journal />
-        </Route>
-      </Switch>
-    </div>
+    !isAuthenticating && (
+      <div>
+        <Container className="py-3">
+          <Navbar bg="dark" variant="dark" sticky="top" className="mb-3">
+            <Navbar.Brand>
+              <img
+                alt="Journal-Logo"
+                src={logo}
+                width="30"
+                height="30"
+                className="d-inline-block align-top"
+              />{' '}
+      Daily Journal
+          </Navbar.Brand>
+            {isAuthenticated ? (
+              <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+            ) : (<div />)
+            };
+        </Navbar>
+        </Container>
+
+        <AppContext.Provider value={{ isAuthenticated, userHasAuthenticated }}>
+          <Routes />
+        </AppContext.Provider>
+
+      </div>
+    )
   );
 }
 

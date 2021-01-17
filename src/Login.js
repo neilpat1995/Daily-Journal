@@ -1,40 +1,44 @@
-import { Component } from "react";
-import { signIn } from "./authUtils";
+import React, { useState, useEffect } from "react";
+import { Auth } from "aws-amplify";
+import { useAppContext } from "./libs/contextLib";
+import { useHistory } from "react-router-dom";
 
-class Login extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            email: "",
-            password: ""
-        };
-    }
+function Login() {
+    const { isAuthenticated, userHasAuthenticated } = useAppContext();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const history = useHistory();
 
-    handleSubmit = (event) => {
+    async function handleSubmit(event) {
         event.preventDefault();
-        signIn(this.state.email, this.state.password);
+        try {
+            await Auth.signIn(email, password);
+            userHasAuthenticated(true);
+            history.push("/");
+        } catch (error) {
+            alert(error.message);
+        }
     }
 
-    handleChange = (event) => {
-        this.setState({
-            [event.target.name]: event.target.value
-        });
-    }
+    useEffect(() => {
+        if(isAuthenticated) {
+            history.push("/");
+            alert("You are already logged in.");
+        }
+    }, [isAuthenticated, history]);
 
-    render() {
-        return (
-            <div>
-                <h1> Login </h1>
-                <form onSubmit={this.handleSubmit}>
-                    <label for="emailText">Email address</label><br />
-                    <input type="text" name="emailText" value={this.state.email} onChange={this.handleChange} autoFocus/><br /><br />
-                    <label for="passwordText">Password</label><br />
-                    <input type="text" name="passwordText" value={this.state.password} onChange={this.handleChange} /><br /><br />
-                    <input type="submit" value="Submit" />
-                </form>
-            </div>
-        )
-    }
+    return (
+        <div>
+            <h1> Login </h1>
+            <form onSubmit={handleSubmit}>
+                <label htmlFor="email">Email address</label><br />
+                <input type="text" name="email" value={email} onChange={(event) => setEmail(event.target.value)} autoFocus /><br /><br />
+                <label htmlFor="password">Password</label><br />
+                <input type="password" name="password" value={password} onChange={(event) => setPassword(event.target.value)} /><br /><br />
+                <input type="submit" value="Submit" />
+            </form>
+        </div>
+    );
 
 }
 

@@ -1,8 +1,9 @@
-.formTitle {
+#pageInfo {
     text-align: center;
+    margin-bottom: 20px;
 }
 
-.createEntryForm {
+.confirmForm Form {
     max-width: 400px;
     margin: 0 auto;
 }

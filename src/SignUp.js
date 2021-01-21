@@ -2,21 +2,24 @@ import React, { useState } from "react";
 import { Auth } from "aws-amplify";
 import SignUpConfirm from "./SignUpConfirm";
 import "./Signup.css";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert";
 
 function SignUp() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const [submittedInitForm, setSubmittedInitForm] = useState(false);
+    const [error, setError] = useState(null);
 
     async function handleSubmit(event) {
         event.preventDefault();
         if (email.length === 0 || password.length === 0 || passwordConfirm.length === 0) {
-            alert("Error: At least one form field is empty, please try again.");
+            setError("Error: At least one form field is empty, please try again.");
         }
-
         else if (password !== passwordConfirm) {
-            alert("Error: Password fields do not match, please try again.");
+            setError("Error: Password fields do not match, please try again.");
         }
         else {
             try {
@@ -26,34 +29,45 @@ function SignUp() {
                 });
                 setSubmittedInitForm(true);
             } catch (error) {
-                console.log('error signing up:', error);
+                setError("Error: " + error.message);
             }
         }
     }
 
-    // useEffect(() => {
-    //     if(isAuthenticated) {
-    //         history.push("/");
-    //         alert("You are already logged in.");
-    //     }
-    // }, [isAuthenticated, history]);
-
     if (submittedInitForm) {
-        return <SignUpConfirm username={email}/>;
+        return <SignUpConfirm username={email} />;
     }
     else {
         return (
-            <div className="signUpFormContainer">
-                <h1> Sign Up </h1>
-                <form className="form" onSubmit={handleSubmit}>
-                    <label htmlFor="email">Email address</label><br />
-                    <input type="text" name="email" value={email} onChange={(event) => setEmail(event.target.value)} autoFocus /><br /><br />
-                    <label htmlFor="password">Password</label><br />
-                    <input type="password" name="password" value={password} onChange={(event) => setPassword(event.target.value)} /><br /><br />
-                    <label htmlFor="passwordConfirm">Confirm Password</label><br />
-                    <input type="password" name="passwordConfirm" value={passwordConfirm} onChange={(event) => setPasswordConfirm(event.target.value)} /><br /><br />
-                    <input type="submit" value="Submit" />
-                </form>
+            <div className="signupForm">
+            {
+                error &&
+                    <Alert variant="danger">
+                        {error}
+                    </Alert>
+            }
+                <h1>Sign Up</h1>
+                <Form onSubmit={handleSubmit}>
+                    <Form.Group controlId="formEmail">
+                        <Form.Label>Email address</Form.Label>
+                        <Form.Control required type="email" placeholder="Enter email" value={email} onChange={(event) => setEmail(event.target.value)} autoFocus />
+                    </Form.Group>
+
+                    <Form.Group controlId="formPassword">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control required aria-describedby="passwordHelpText" type="password" placeholder="Enter password" value={password} onChange={(event) => setPassword(event.target.value)} />
+                        <Form.Text id="passwordHelpText" muted>
+                            Password must be at least 8 characters, and a mix of uppercase and lowercase letters, special characters, and numbers.
+                        </Form.Text>
+                    </Form.Group>
+                    <Form.Group controlId="formConfirmPassword">
+                        <Form.Label>Confirm Password</Form.Label>
+                        <Form.Control required type="password" placeholder="Repeat password" value={passwordConfirm} onChange={(event) => setPasswordConfirm(event.target.value)} />
+                    </Form.Group>
+                    <Button className="submitBtn" variant="primary" type="submit">
+                        Create Account
+                    </Button>
+                </Form>
             </div>
         );
     }

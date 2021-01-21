@@ -1,11 +1,13 @@
-.entryFormContainer {
-    text-align: center;
+.entryForm {
+    max-width: 400px;
+    margin: 0 auto;
 }
 
-.form {
-    display: inline-block;
-}
-
-.deleteButton {
+.btn {
     margin-top: 20px;
+    width: 400px;
+}
+
+.formTitle {
+    text-align: center;
 }

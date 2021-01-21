@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import { API } from "aws-amplify";
 import { useHistory } from "react-router-dom";
 import { useAppContext } from "./libs/contextLib";
+import Alert from "react-bootstrap/Alert";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+
 import "./JournalEntryForm.css";
 
 function JournalEntryForm() {
@@ -10,6 +14,7 @@ function JournalEntryForm() {
     const [description, setDescription] = useState("");
     const history = useHistory();
     let { isAuthenticated } = useAppContext();
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -25,17 +30,28 @@ function JournalEntryForm() {
             body: {
                 title: title,
                 description: description,
-                timestamp: new Date().toString()
+                timestamp: getCurrentTimestamp(new Date())
             }
         };
 
         return API.post(apiName, path, myInit);
     }
 
+    const getCurrentTimestamp = (date) => {
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+        const timeBlock = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        const strTime = hours + ':' + minutes + ' ' + timeBlock;
+        return date.toDateString() + " " + strTime;
+    };
+
     async function handleEntrySubmit(event) {
         event.preventDefault();
         if (title.length === 0 || description.length === 0) {
-            alert("Error: At least one form field is empty; please try again.");
+            setError("Error: At least one form field is empty; please try again.");
         }
         else {
             try {
@@ -43,21 +59,35 @@ function JournalEntryForm() {
                 history.push("/");
             }
             catch(e) {
-                console.log(e);
+                setError(e.message);
             }
         }
     }
 
     return (
-        <div className="createEntryFormContainer">
-            <h1>Create New Entry</h1>
-            <form className="form" onSubmit={handleEntrySubmit}>
-                <label htmlFor="titleText">Title</label><br />
-                <input type="text" id="titleText" name="title" value={title} onChange={(event) => setTitle(event.target.value)}></input><br /><br />
-                <label htmlFor="descriptionText">Description</label><br />
-                <input type="text" id="descriptionText" name="description" value={description} onChange={(event) => setDescription(event.target.value)}></input><br /><br />
-                <input type="submit" value="Submit" />
-            </form>
+        <div>
+        {
+            error && 
+                <Alert variant="danger">
+                    {error}
+                </Alert>
+        }
+            <h1 className="formTitle">Create New Entry</h1>
+
+            <Form className="createEntryForm" onSubmit={handleEntrySubmit}>
+                <Form.Group controlId="formTitle">
+                    <Form.Label>Title</Form.Label>
+                    <Form.Control type="text" placeholder="Enter title" value={title} onChange={(event) => setTitle(event.target.value)} autoFocus />
+                </Form.Group>
+
+                <Form.Group controlId="formDescription">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control type="text" placeholder="Enter description" value={description} onChange={(event) => setDescription(event.target.value)} />
+                </Form.Group>
+                <Button className="submitBtn" variant="primary" type="submit">
+                    Create Entry
+                </Button>
+            </Form>
         </div>
     );
 

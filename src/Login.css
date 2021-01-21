@@ -9,6 +9,19 @@
     text-align: center;
 }
 
-.form {
-    display: inline-block;
+.loginForm {
+    padding: 10px 0 50px;
+}
+
+.loginForm Form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.loginForm > h1 {
+    text-align: center;
+}
+
+.submitBtn {
+    width: 100%;
 }

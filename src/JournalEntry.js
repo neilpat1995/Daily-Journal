@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { API } from "aws-amplify";
 import { useHistory } from "react-router-dom";
 import { useAppContext } from "./libs/contextLib";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 import "./JournalEntry.css";
 
 const JournalEntry = () => {
@@ -87,15 +89,26 @@ const JournalEntry = () => {
     }
 
     return (
-        <div className="entryFormContainer">
-            <form className="form" onSubmit={handleSubmit}>
-                <label htmlFor="title">Title</label><br />
-                <input type="text" id="title" name="title" value={title} onChange={(event) => setTitle(event.target.value)}></input><br /><br />
-                <label htmlFor="description">Description</label><br />
-                <input type="text" id="description" name="description" value={description} onChange={(event) => setDescription(event.target.value)}></input><br /><br />
-                <input type="submit" value="Save Changes" /><br />
-                <button className="deleteButton" type="button" onClick={() => handleDeleteClick()}>Delete Entry</button>
-            </form>
+        <div>
+            <h1 className="formTitle">View Entry</h1>
+            <Form className="entryForm" onSubmit={handleSubmit}>
+                <Form.Group controlId="formTitle">
+                    <Form.Label>Title</Form.Label>
+                    <Form.Control type="text" placeholder="Enter title" value={title} onChange={(event) => setTitle(event.target.value)} autoFocus />
+                </Form.Group>
+
+                <Form.Group controlId="formDescription">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control type="text" placeholder="Enter description" value={description} onChange={(event) => setDescription(event.target.value)} />
+                </Form.Group>
+                <Button className="btn" variant="primary" type="submit">
+                    Update Entry
+                </Button>
+                <br />
+                <Button className="btn" variant="danger" type="button" onClick={() => handleDeleteClick()}>
+                    Delete Entry
+                </Button>
+            </Form>
         </div>
     );
 }

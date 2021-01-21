@@ -1,7 +1,16 @@
-.signUpFormContainer {
+.signupForm {
+    padding: 10px 0 50px;
+}
+
+.signupForm Form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.signupForm h1 {
     text-align: center;
 }
 
-.form {
-    display: inline-block;
+.submitBtn {
+    width: 100%;
 }

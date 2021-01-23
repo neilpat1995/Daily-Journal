@@ -21,6 +21,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "predeploy": "npm run build",
+    "deploy": "aws s3 sync build/ s3://daily-journal-bucket --delete",
+    "postdeploy": "aws cloudfront create-invalidation --distribution-id EEXM8H3DAWPRX --paths '/*' && aws cloudfront create-invalidation --distribution-id E2BFDIBMFVTSTH --paths '/*'",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
